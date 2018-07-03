@@ -52,7 +52,7 @@ class PlaceholderDataSourceDelegate: NSObject {
     /// Animate the cell (UICollectionViewCell / UITableViewCell)
     ///
     /// - Parameter cell: the cell to animate, it should be conform to the protocol CellPlaholding
-    func animate(cell: CellPlaceholding) {
+    func animate(cell: CellPlaceholding, shouldLoop: Bool = false) {
         // animate the imageView
         
         guard let imageView = cell.placeholderImageView else { return }
@@ -66,7 +66,9 @@ class PlaceholderDataSourceDelegate: NSObject {
             let stretchAndRotate = rotate.scaledBy(x: 1.0, y: 1.0)
             imageView.transform = stretchAndRotate
             
-        }, completion: nil)
+        }) { (finished) in
+            
+        }
     }
     
     /// Returns the height of the scroll view by removing the top and bottom inset + the height of the refresh control
@@ -163,7 +165,7 @@ extension PlaceholderDataSourceDelegate: UITableViewDelegate {
         }
         
         guard let placeholderTableViewCell = cell as? PlaceholderTableViewCell else { return }
-        animate(cell: placeholderTableViewCell)
+        animate(cell: placeholderTableViewCell, shouldLoop: placeholder.style?.bouncyLoopAnimation ?? false)
     }
 }
 
@@ -210,6 +212,15 @@ extension PlaceholderDataSourceDelegate: UICollectionViewDelegateFlowLayout {
         
         let collectionViewHeight = height(of: collectionView)
         return CGSize(width: collectionView.bounds.width, height: collectionViewHeight)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if placeholder.style?.isAnimated == false {
+            return
+        }
+        
+        guard let placeholderCollectionViewCell = cell as? PlaceholderCollectionViewCell else { return }
+        animate(cell: placeholderCollectionViewCell, shouldLoop: placeholder.style?.bouncyLoopAnimation ?? false)
     }
 }
 

@@ -41,6 +41,9 @@ public struct PlaceholderStyle {
     /// Should display the placeholder with animation or not
     public var isAnimated = true
     
+    /// Should display the placeholder with bouncy loop animation
+    public var bouncyLoopAnimation = false
+    
     /// Should display the tableViewHeader or not, the default value is false
     public var shouldShowTableViewHeader = false
     
